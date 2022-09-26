@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+    Users
+
+{% endblock %}
+
+{% block search %}
+    <form class="d-flex" method="GET">
+
+        <input class="form-control me-2" type="search" placeholder="Search in usernames, firstnames or user city" aria-label="Search" name="q" value="{{ request.args.get('q', '') }}">
+        
+        <button class="btn btn-outline-success" type="submit">Search</button>
+  </form>
+{% endblock %}
+
+{% block content_title %}
+
+    List of users:
+
+{% endblock %}
+
+{% block content %}
+
+    {% if users.get_queryset() %}
+        {% for user in users.get_queryset() %}
+            <div class="card border-info mb-3" style="max-width: 18rem;">
+                <div class="card-header">
+                    <font size="2", >Telegram ID: </font>{{ user.telegram_id }}
+                </div>
+                <div class="card-body">
+                <h5 class="card-title"><font size="2">Username: </font></h5>
+                <p class="card-text">{{ user.username }}</p>
+                <a class="btn btn-outline-primary" aria-current="page" href="{{ url_for('user_detail', id=user.telegram_id) }}">Wiew user</a>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-md-5">
+            <font color="green">No user to view</font>
+        </div>
+        <br>
+    {% endif %}
+        
+        
+    
+
+
+    <nav aria-label="...">
+        <ul class="pagination">
+          <li {% if not users.has_prev() %} class="page-item disabled" {% endif %}>
+            <a class="page-link" href="./users?page={{ users.prev_num() }}">Previous</a>
+          </li>
+
+          {% for page in range(1, users.total_pages + 1) %}
+            <li class="page-item {% if page == users.num_page %} active {% endif %}">
+                <a class="page-link" href="./users?page={{ page }}">{{ page }}</a></li>
+          {% endfor %}
+    
+          <li {% if not users.has_next() %} class="page-item disabled" {% endif %} >
+            <a class="page-link" href="./users?page={{ users.next_num() }}">Next</a>
+          </li>
+        </ul>
+      </nav>
+
+{% endblock %}
+
+
+
+{% block flash %}
+
+        {% with errors = get_flashed_messages(category_filter=["error"]) %}
+            {% if errors %}
+                <div class="redtext">
+                    <font size="2">message:</font>
+                    <font size="2" color="red">
+                        {% for message in errors %}
+                            {{ message }}
+                        {% endfor %}
+                    </font>
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% with errors = get_flashed_messages(category_filter=["confirm"]) %}
+            {% if errors %}
+                <div class="bluetext">
+                    <font size="2">message:</font>
+                    <font size="2" color="green">
+                        {% for message in errors %}
+                            {{ message }}
+                        {% endfor %}
+                    </font>
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+    Create user
+
+{% endblock %}
+
+
+{% block content_title %}
+
+    Create user:
+
+{% endblock %}
+
+{% block content %}
+
+<div class="col-md-5">
+    <form action="{{ url_for('create_user') }}" method="POST">
+        
+        {% for field in form %}
+            {% if field.id != 'csrf_token' %}
+
+                <div class="form-group">
+                    <font size="2">{{ field.label() }}:</font>
+                    {{ field(class="form-control") }}
+                </div>
+            {% else %}
+            <div class="form-group">
+                {{ field(class="form-control") }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        {% if form.errors %}
+            {% for error in form.errors.values() %}
+                {% for err in error %}
+                    {{ err }}
+                {% endfor %}    
+            {% endfor%}
+        {% endif %}
+            <br>
+            <button position="absolute" type="submit" class="btn btn-outline-success">Create user</button>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block flash %}
+
+        {% with errors = get_flashed_messages(category_filter=["error"]) %}
+            {% if errors %}
+                <div class="redtext">
+                    <font size="2">message:</font>
+                    <font size="2" color="red">
+                        {% for message in errors %}
+                            {{ message }}
+                        {% endfor %}
+                    </font>
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% with errors = get_flashed_messages(category_filter=["confirm"]) %}
+            {% if errors %}
+                <div class="bluetext">
+                    <font size="2">message:</font>
+                    <font size="2" color="green">
+                        {% for message in errors %}
+                            message: {{ message }}
+                        {% endfor %}
+                    </font>
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+{% endblock %}
