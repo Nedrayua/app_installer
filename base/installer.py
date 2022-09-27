@@ -16,7 +16,10 @@ def check_host_ip():
     """
     Check IP of host
     """
-    return sub.check_call('curl ifconfig.me', shell=True)
+    ip = sub.check_output('curl ifconfig.me', shell=True)
+    print(f'Host ip: {ip}')
+    time.sleep(1)
+    return ip
 
 
 def install_from_execute_file(path_to_resource:str=None) -> None:
@@ -31,7 +34,7 @@ def install_from_execute_file(path_to_resource:str=None) -> None:
     executer_files = [f for f in files if f.startswith('execute_')]
     
     for filename in executer_files:
-        with open(filename, 'r') as file:
+        with open(os.join(path_to_resource, filename), 'r') as file:
             install_result = []
             message_text = "{}{}. Return code: {}"
             marker = '.' * 100

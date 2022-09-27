@@ -18,6 +18,7 @@ BOT_TOKEN = '1619380625:AAFqQC-Uzy7zOQ5SBw8QxZBbJRytp69ffgo'
 DB_NAME = 'CURRENCY_BOT'
 DB_PORT = '27017'
 APP_BOT_PORT = 5000
+
 # === docker-volume names
 MONGO_DB_VOLUME_NAME = 'mongo_db'
 MONGO_VOLUME_DIRECTORY_NAME = 'mongo_db'
@@ -43,8 +44,9 @@ installer.install_from_execute_file(PATH_TO_BASE_DIR)
 # === create certificate and key
 installer.create_ssl_cert(DOMAIN_NAME_OR_IP, PATH_TO_BASE_DIR)
 # === copy cert to bot-app key-directory
-copy_path_from = os.path.join(DIR_PATH,'/keys/bot_cert.pem')
-copy_path_to = os.path.join(DIR_PATH, '/app_bot/key')
+copy_path_from = os.path.join(DIR_PATH,'keys/bot_cert.pem')
+copy_path_to = os.path.join(DIR_PATH, 'app_bot/key')
+
 installer.copy_file(copy_path_from, copy_path_to)
 
 # === created docker-volume for mongo
@@ -86,7 +88,7 @@ path_to_dockerfile_app_api = os.path.join(DIR_PATH, APP_API_IMAGE_NAME)
 installer.create_docker_image(APP_API_IMAGE_NAME, path_to_dockerfile_app_api)
 
 # === run docker-container app_api
-block_v = f'{os.path.join(DIR_PATH, os.path.join(BASE_DIR, APP_CONFIG))}:/usr/src/app/{APP_CONFIG}'
+block_v = f'{os.path.join(PATH_TO_BASE_DIR, APP_CONFIG)}:/usr/src/app/{APP_CONFIG}'
 block_p = f'-p {APP_API_PORT}:{APP_API_PORT}'
 installer.run_docker_container(APP_API_CONTAINER_NAME, p=block_p, v=block_v, img_name=APP_API_IMAGE_NAME)
 
@@ -97,13 +99,17 @@ APP_BOT_IP = installer.check_docker_container_ip(APP_BOT_CONTAINER_NAME)
 APP_API_IP = installer.check_docker_container_ip(APP_API_CONTAINER_NAME)
 
 # === create nginx configuration file
-installer.create_file_nginx_config(PATH_TO_BASE_DIR, NGINX_CONFIG_TEMPLATENAME, NGINX_CONFIG_FILENAME, APP_BOT_IP, APP_API_IP)
+installer.create_file_nginx_config(
+    PATH_TO_BASE_DIR, 
+    NGINX_CONFIG_TEMPLATENAME, 
+    NGINX_CONFIG_FILENAME, 
+    APP_BOT_IP, APP_API_IP)
 
 # === create docker-image wih nginx
-path_to_dockerfile_nginx = os.path.join(BASE_DIR, NGNIX_IMAGE_NAME)
+path_to_dockerfile_nginx = os.path.join(PATH_TO_BASE_DIR, NGNIX_IMAGE_NAME)
 installer.create_docker_image(APP_API_IMAGE_NAME, path_to_dockerfile_app_api)
 
 # === run docker container with nginx
 block_p = '-p 80:80 -p 443:443'
-block_v = f'{os.path.join(DIR_PATH, os.path.join(BASE_DIR, APP_CONFIG))}:/usr/src/app/{APP_CONFIG}'
+block_v = f'{os.path.join(PATH_TO_BASE_DIR, NGINX_CONFIG_FILENAME)}:/etc/nginx/conf.d/default.conf'
 installer.run_docker_container(NGNIX_CONTAINER_NAME, p=block_p, v=block_v, img_name=NGNIX_IMAGE_NAME)
