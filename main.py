@@ -81,18 +81,21 @@ path_to_dockerfile_app_bot = os.path.join(DIR_PATH, APP_BOT_IMAGE_NAME)
 installer.create_docker_image(APP_BOT_IMAGE_NAME, path_to_dockerfile_app_bot)
 
 # === run docker-container app_bot
+con_name = f'--name {APP_BOT_CONTAINER_NAME}'
 block_p = f'-p {APP_BOT_PORT}:{APP_BOT_PORT}'
 block_v = f'-v {os.path.join(PATH_TO_BASE_DIR, APP_CONFIG)}:/usr/src/app/bot/{APP_CONFIG}'
-installer.run_docker_container(APP_BOT_CONTAINER_NAME, p=block_p, v=block_v, img_name=APP_BOT_IMAGE_NAME)
+
+installer.run_docker_container(con_name=con_name, p=block_p, v=block_v, img_name=APP_BOT_IMAGE_NAME)
 
 # === create docker-image with api_app
 path_to_dockerfile_app_api = os.path.join(DIR_PATH, APP_API_IMAGE_NAME)
 installer.create_docker_image(APP_API_IMAGE_NAME, path_to_dockerfile_app_api)
 
 # === run docker-container app_api
+con_name = f'--name {APP_API_CONTAINER_NAME}'
 block_p = f'-p {APP_API_PORT}:{APP_API_PORT}'
 block_v = f'-v {os.path.join(PATH_TO_BASE_DIR, APP_CONFIG)}:/usr/src/app/{APP_CONFIG}'
-installer.run_docker_container(APP_API_CONTAINER_NAME, p=block_p, v=block_v, img_name=APP_API_IMAGE_NAME)
+installer.run_docker_container(con_name=con_name, p=block_p, v=block_v, img_name=APP_API_IMAGE_NAME)
 
 # === find out IP docker app_bot-container
 APP_BOT_IP = installer.check_docker_container_ip(APP_BOT_CONTAINER_NAME)
@@ -112,6 +115,7 @@ path_to_dockerfile_nginx = os.path.join(PATH_TO_BASE_DIR, NGNIX_IMAGE_NAME)
 installer.create_docker_image(APP_API_IMAGE_NAME, path_to_dockerfile_app_api)
 
 # === run docker container with nginx
+con_name = f'--name {NGNIX_CONTAINER_NAME}'
 block_p = '-p 80:80 -p 443:443'
 block_v = f'{os.path.join(PATH_TO_BASE_DIR, NGINX_CONFIG_FILENAME)}:/etc/nginx/conf.d/default.conf'
-installer.run_docker_container(NGNIX_CONTAINER_NAME, p=block_p, v=block_v, img_name=NGNIX_IMAGE_NAME)
+installer.run_docker_container(con_name=con_name, p=block_p, v=block_v, img_name=NGNIX_IMAGE_NAME)

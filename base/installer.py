@@ -150,7 +150,7 @@ def run_docker_container(con_name:str=None, p:str=None, v:str=None, *, img_name:
     if con_name not in avaliable_containers:
         try:
             sub.run(docker_command.format(con_name=con_name, p=p, v=v, img_name=img_name), shell=True)
-            print(f'{SUCCESS}\nSuccesful run docker container from image: {img_name}')
+            print(f'{SUCCESS}\nSuccesful run docker container: {con_name} from image: {img_name}')
         except sub.CalledProcessError as ex:
             print(f'{ERROR}\nSomething do wrong:', ex)
     else:
@@ -169,7 +169,7 @@ def check_docker_container_ip(con_name:str) -> str:
     if con_name not in avaliable_containers:
         try:
             container_ip = sub.check_output(total_exec, shell=True).decode().strip()
-            print(f'{SUCCESS}\nSuccesful find out IP from docker-container: {con_name}')
+            print(f'{SUCCESS}\nSuccesful find out IP {container_ip} of docker-container: {con_name}')
             return container_ip
         except sub.CalledProcessError as ex:
             print(f'{ERROR}\nPerhabs some truble with docker: ', ex)
@@ -200,7 +200,7 @@ def sind_data_to_config_json(data:dict, config_file:str, path_to_resource:str=No
 def copy_file(path_file_from:str, path_file_to:str) -> None:
     copy = sub.run(f'cp {path_file_from} {path_file_to}', shell=True)
     if copy.returncode == 0:
-        print(f'{SUCCESS}\nFile {path_file_from.split("/")[-1]} ssccessfull copied')
+        print(f'{SUCCESS}\nFile {path_file_from.split("/")[-1]} saccessfull copied')
     else:
         print(f'{ERROR}\nFile {path_file_from.split("/")[-1]} not copied or somethin else')
 
