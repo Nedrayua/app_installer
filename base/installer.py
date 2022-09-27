@@ -4,6 +4,7 @@ import os
 import json
 from io import UnsupportedOperation
 import time
+import functools
 
 
 # === docker ommands
@@ -11,17 +12,29 @@ COMM_CHECK_CONTAINERS = 'sudo docker ps -a'
 COMM_CHECK_VOLUMES = 'sudo docker volme ls'
 COMM_CHECK_IMAGES = 'sudo docker images -a'
 
+def wait_for(seconds):
+    def decorator(func):
+        @functools.wraps(func)
+        def inner(*args, **kwargs):
+            result = func(*args, **kwargs)
+            time.sleep(seconds)
+            return result
+        return inner
+    return decorator
 
+
+@wait_for(2)
 def check_host_ip():
     """
     Check IP of host
     """
-    ip = sub.check_output('curl ifconfig.me', shell=True)
+    ip = sub.check_output('curl ifconfig.me', shell=True).decode()
     print(f'Host ip: {ip}')
     time.sleep(1)
     return ip
 
 
+@wait_for(2)
 def install_from_execute_file(path_to_resource:str=None) -> None:
     """
     :path_to_resource: resorce with executer files  
@@ -34,7 +47,7 @@ def install_from_execute_file(path_to_resource:str=None) -> None:
     executer_files = [f for f in files if f.startswith('execute_')]
     
     for filename in executer_files:
-        with open(os.join(path_to_resource, filename), 'r') as file:
+        with open(os.path.join(path_to_resource, filename), 'r') as file:
             install_result = []
             message_text = "{}{}. Return code: {}"
             marker = '.' * 100
@@ -50,6 +63,7 @@ def install_from_execute_file(path_to_resource:str=None) -> None:
                 print(result)
 
 
+@wait_for(2)
 def create_ssl_cert(domain_name, path_to_resource:str=None) -> None:
     """
     :domain_name: ip-address or domain name of host
@@ -68,6 +82,7 @@ def create_ssl_cert(domain_name, path_to_resource:str=None) -> None:
         print('Fail', cert_command, sep='\n')
 
 
+@wait_for(2)
 def parse_docker_check_result(command:str) -> list:
     """
     :command: - docker command for take a list of items
@@ -84,6 +99,7 @@ def parse_docker_check_result(command:str) -> list:
     return dict_data
 
 
+@wait_for(2)
 def create_docker_volume(path_to_resource:str, mongo_db_folder:str, docker_volume_name:str):
     """
     Create docker-volume with binding to folder
@@ -101,6 +117,7 @@ def create_docker_volume(path_to_resource:str, mongo_db_folder:str, docker_volum
         print(f'Docker volume {docker_volume_name} allready exist')
 
 
+@wait_for(2)
 def create_docker_image( image_name:str, path_to_dokerfile:str):
     """
     Created docker image
@@ -117,6 +134,7 @@ def create_docker_image( image_name:str, path_to_dokerfile:str):
         print(f'Docker-image with name {image_name} already exist')
         
 
+@wait_for(2)
 def run_docker_container(con_name:str=None, p:str=None, v:str=None, *, img_name:str) -> None:
     con_name = con_name or ''
     p = p or ''
@@ -133,6 +151,7 @@ def run_docker_container(con_name:str=None, p:str=None, v:str=None, *, img_name:
         print(f'Docker-container with name {con_name} already exist')
 
 
+@wait_for(2)
 def check_docker_container_ip(con_name:str) -> str:
     """
     :con_name: - name of docker-container
@@ -152,6 +171,7 @@ def check_docker_container_ip(con_name:str) -> str:
         print(f'Docker-container with name {con_name} not exist')
 
 
+@wait_for(2)
 def sind_data_to_config_json(data:dict, config_file:str, path_to_resource:str=None) -> None:
     path_to_resource = path_to_resource or ''
     path_to_config_file = os.path.join(path_to_resource, config_file)
@@ -166,6 +186,7 @@ def sind_data_to_config_json(data:dict, config_file:str, path_to_resource:str=No
         json.dump(data_from_json, file)
 
 
+@wait_for(2)
 def copy_file(path_file_from:str, path_file_to:str) -> None:
     copy = sub.run(f'cp {path_file_from} {path_file_to}', shell=True)
     if copy.returncode == 0:
@@ -174,6 +195,7 @@ def copy_file(path_file_from:str, path_file_to:str) -> None:
         print(f'{"=" * 51}ERROR!{"=" * 50}\nFile {path_file_from.split("/")[-1]} not copied or somethin else')
 
 
+@wait_for(2)
 def create_file_nginx_config(
             path_to_base_folder:str,
             template_file_name:str, 
