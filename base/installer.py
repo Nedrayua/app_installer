@@ -12,6 +12,10 @@ COMM_CHECK_CONTAINERS = 'sudo docker ps -a'
 COMM_CHECK_VOLUMES = 'sudo docker volume ls'
 COMM_CHECK_IMAGES = 'sudo docker images -a'
 
+# === results marks
+SUCCESS = f'{"=" * 50}SUCCESS!{"=" * 50}'
+ERROR = f'{"=" * 50}ERROR!{"=" * 50}'
+
 def wait_for(seconds):
     def decorator(func):
         @functools.wraps(func)
@@ -77,9 +81,9 @@ def create_ssl_cert(domain_name, path_to_resource:str=None) -> None:
         os.mkdir(os.path.join(path_to_resource, 'keys'))
     cert_command = sub.run(cert_shell.format(path_to_resource, domain_name), shell=True)
     if cert_command.returncode == 0:
-        print('Successful create certificate with key for domainname: ', domain_name)
+        print(f'{SUCCESS}\nSuccessful create certificate with key for domainname: ', domain_name)
     else:
-        print('Fail', cert_command, sep='\n')
+        print(f'{ERROR}\n, {cert_command}')
 
 
 @wait_for(2)
@@ -108,13 +112,12 @@ def create_docker_volume(path_to_resource:str, mongo_db_folder:str, docker_volum
     mongo_db_folder_path = os.path.join(path_to_resource, mongo_db_folder)
     if not os.path.exists(os.path.join(path_to_resource, mongo_db_folder)):
         os.mkdir(mongo_db_folder_path)
-    aval_vilumes = [volume['VOLUME NAME'] for volume in parse_docker_check_result(COMM_CHECK_VOLUMES)]
+    aval_vilumes = [volume.get('VOLUME NAME') for volume in parse_docker_check_result(COMM_CHECK_VOLUMES)]
     if docker_volume_name not in aval_vilumes:
         volume = sub.check_output(docker_command.format(docker_volume_name, mongo_db_folder_path), shell=True)
-        print(f'Docker volume {docker_volume_name} created')
-        return volume
+        print(f'{SUCCESS}\nDocker volume {docker_volume_name} created')
     else:
-        print(f'Docker volume {docker_volume_name} allready exist')
+        print(f'{ERROR}\nDocker volume {docker_volume_name} allready exist')
 
 
 @wait_for(2)
@@ -123,13 +126,13 @@ def create_docker_image( image_name:str, path_to_dokerfile:str):
     Created docker image
     """
     create_image_command = f'sudo docker build -t {image_name} {path_to_dokerfile}'
-    aval_images = [image['REPOSITORY'] for image in parse_docker_check_result(COMM_CHECK_IMAGES)]
+    aval_images = [image.get('REPOSITORY') for image in parse_docker_check_result(COMM_CHECK_IMAGES)]
     if image_name not in aval_images:
         try:
             sub.check_output(create_image_command, shell=True)
-            print(f'{"=" * 50}SUCCESS!{"=" * 50}\nDocker image: {image_name} successful created')
+            print(f'{SUCCESS}\nDocker image: {image_name} successful created')
         except sub.CalledProcessError as ex:
-            print(f'{"=" * 50}ERROR!{"=" * 50}\nSomething do wrong:', ex)
+            print(f'{ERROR}\nSomething do wrong:', ex)
     else:
         print(f'Docker-image with name {image_name} already exist')
         
@@ -144,9 +147,9 @@ def run_docker_container(con_name:str=None, p:str=None, v:str=None, *, img_name:
     if con_name not in avaliable_containers:
         try:
             sub.run(docker_command.format(con_name=con_name, p=p, v=v, img_name=img_name), shell=True)
-            print(f'{"=" * 50}SUCCESS!{"=" * 50}\nSuccesful run docker container from image: {img_name}')
+            print(f'{SUCCESS}\nSuccesful run docker container from image: {img_name}')
         except sub.CalledProcessError as ex:
-            print(f'{"=" * 50}ERROR!{"=" * 50}\nSomething do wrong:', ex)
+            print(f'{ERROR}\nSomething do wrong:', ex)
     else:
         print(f'Docker-container with name {con_name} already exist')
 
@@ -159,14 +162,14 @@ def check_docker_container_ip(con_name:str) -> str:
     """
     check_ip_docker_exec = "sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "
     total_exec = check_ip_docker_exec + con_name
-    avaliable_containers = [con['NAMES'] for con in parse_docker_check_result(COMM_CHECK_CONTAINERS)]
+    avaliable_containers = [con.get('NAMES') for con in parse_docker_check_result(COMM_CHECK_CONTAINERS)]
     if con_name not in avaliable_containers:
         try:
             container_ip = sub.check_output(total_exec, shell=True).decode().strip()
-            print(f'{"=" * 50}SUCCESS!{"=" * 50}\nSuccesful find out docker container IP from docker-container: {con_name}')
+            print(f'{SUCCESS}\nSuccesful find out IP from docker-container: {con_name}')
             return container_ip
         except sub.CalledProcessError as ex:
-            print(f'{"=" * 51}ERROR!{"=" * 50}\nPerhabs some truble with docker: ', ex)
+            print(f'{ERROR}\nPerhabs some truble with docker: ', ex)
     else:
         print(f'Docker-container with name {con_name} not exist')
 
@@ -183,16 +186,19 @@ def sind_data_to_config_json(data:dict, config_file:str, path_to_resource:str=No
 
     data_from_json.update(data)
     with open(path_to_config_file, 'w') as file:
-        json.dump(data_from_json, file)
+        try:
+            json.dump(data_from_json, file)
+        except IOError as ex:
+            print(f'{ERROR}\nPerhabs some truble with path: ', ex)
 
 
 @wait_for(2)
 def copy_file(path_file_from:str, path_file_to:str) -> None:
     copy = sub.run(f'cp {path_file_from} {path_file_to}', shell=True)
     if copy.returncode == 0:
-        print(f'{"=" * 50}SUCCESS!{"=" * 50}\nFile {path_file_from.split("/")[-1]} ssccessfull copied')
+        print(f'{SUCCESS}\nFile {path_file_from.split("/")[-1]} ssccessfull copied')
     else:
-        print(f'{"=" * 51}ERROR!{"=" * 50}\nFile {path_file_from.split("/")[-1]} not copied or somethin else')
+        print(f'{ERROR}\nFile {path_file_from.split("/")[-1]} not copied or somethin else')
 
 
 @wait_for(2)
