@@ -44,7 +44,7 @@ installer.install_from_execute_file(PATH_TO_BASE_DIR)
 # === create certificate and key
 installer.create_ssl_cert(DOMAIN_NAME_OR_IP, PATH_TO_BASE_DIR)
 # === copy cert to bot-app key-directory
-copy_path_from = os.path.join(DIR_PATH,'keys/bot_cert.pem')
+copy_path_from = os.path.join(PATH_TO_BASE_DIR,'keys/bot_cert.pem')
 copy_path_to = os.path.join(DIR_PATH, 'app_bot/key')
 
 installer.copy_file(copy_path_from, copy_path_to)

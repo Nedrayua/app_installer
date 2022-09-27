@@ -9,7 +9,7 @@ import functools
 
 # === docker ommands
 COMM_CHECK_CONTAINERS = 'sudo docker ps -a'
-COMM_CHECK_VOLUMES = 'sudo docker volme ls'
+COMM_CHECK_VOLUMES = 'sudo docker volume ls'
 COMM_CHECK_IMAGES = 'sudo docker images -a'
 
 def wait_for(seconds):
