@@ -212,7 +212,7 @@ def create_file_nginx_config(
     """
     take ip docker-containers and fill-ins him to the nginx configuration files
     """
-    path_to_template_file = os.join(path_to_base_folder, template_file_name)
+    path_to_template_file = os.path.join(path_to_base_folder, template_file_name)
     with open(path_to_template_file, 'r') as file:
         template_form = file.read()
 
@@ -221,3 +221,14 @@ def create_file_nginx_config(
     path_to_nginx_conf = os.path.join(path_to_base_folder, nginx_conf_file_name)
     with open(path_to_nginx_conf, 'w') as file:
         file.write(nginx_conf)
+
+
+def check_file_exist(path_to_file:str) -> None:
+    return os.path.isfile(path_to_file)
+
+
+@wait_for(2)
+def remove_file(path_to_file):
+    if check_file_exist(path_to_file):
+        os.remove(path_to_file)
+        print(f'Remove file {path_to_file.split("/")[-1]}')

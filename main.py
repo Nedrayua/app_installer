@@ -1,3 +1,5 @@
+from gettext import install
+from importlib.resources import path
 import os
 
 from base import installer
@@ -39,6 +41,8 @@ NGNIX_CONTAINER_NAME = 'nginx'
 MONGO_DB_CONTAINER_NAME = 'mongo'
 
 # === Install docker ==
+path_to_gpg_file = '/etc/apt/keyrings/docker.gpg'
+installer.remove_file(path_to_gpg_file)
 installer.install_from_execute_file(PATH_TO_BASE_DIR)
 
 # === create certificate and key
