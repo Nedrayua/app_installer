@@ -4,7 +4,6 @@ import json
 from io import UnsupportedOperation
 import time
 import functools
-from turtle import shearfactor
 
 
 # === docker ommands
@@ -16,7 +15,11 @@ COMM_CHECK_IMAGES = 'sudo docker images -a'
 SUCCESS = f'{"=" * 50}SUCCESS!{"=" * 50}'
 ERROR = f'{"=" * 50}ERROR!{"=" * 50}'
 
+
 def wait_for(seconds):
+    """
+    func decorator for use time.slip() on used functon
+    """
     def decorator(func):
         @functools.wraps(func)
         def inner(*args, **kwargs):
@@ -188,8 +191,9 @@ def sind_data_to_config_json(data:dict, config_file:str, path_to_resource:str=No
     with open(path_to_config_file, 'w') as file:
         try:
             json.dump(data_from_json, file)
+            print(f'{SUCCESS}\ndata successfull sind to {path_to_config_file}')
         except IOError as ex:
-            print(f'{ERROR}\nPerhabs some truble with path: ', ex)
+            print(f'{ERROR}\ndata not sind to {path_to_config_file}\nPerhabs some truble with path: ', ex)
 
 
 @wait_for(2)

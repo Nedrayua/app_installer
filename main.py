@@ -76,13 +76,13 @@ config_data = {
     }
 installer.sind_data_to_config_json(config_data, APP_CONFIG, PATH_TO_BASE_DIR)
 
-# === create docker-image with app_api
+# === create docker-image with app_bot
 path_to_dockerfile_app_bot = os.path.join(DIR_PATH, APP_BOT_IMAGE_NAME)
 installer.create_docker_image(APP_BOT_IMAGE_NAME, path_to_dockerfile_app_bot)
 
-# === run docker-container bot_app
-block_p = f'-p {APP_BOT_PORT}:{APP_API_PORT}'
-block_v = f'{os.path.join(DIR_PATH, os.path.join(BASE_DIR, APP_CONFIG))}:/usr/src/app/bot/{APP_CONFIG}'
+# === run docker-container app_bot
+block_p = f'-p {APP_BOT_PORT}:{APP_BOT_PORT}'
+block_v = f'-v {os.path.join(PATH_TO_BASE_DIR, APP_CONFIG)}:/usr/src/app/bot/{APP_CONFIG}'
 installer.run_docker_container(APP_BOT_CONTAINER_NAME, p=block_p, v=block_v, img_name=APP_BOT_IMAGE_NAME)
 
 # === create docker-image with api_app
@@ -90,8 +90,8 @@ path_to_dockerfile_app_api = os.path.join(DIR_PATH, APP_API_IMAGE_NAME)
 installer.create_docker_image(APP_API_IMAGE_NAME, path_to_dockerfile_app_api)
 
 # === run docker-container app_api
-block_v = f'{os.path.join(PATH_TO_BASE_DIR, APP_CONFIG)}:/usr/src/app/{APP_CONFIG}'
 block_p = f'-p {APP_API_PORT}:{APP_API_PORT}'
+block_v = f'-v {os.path.join(PATH_TO_BASE_DIR, APP_CONFIG)}:/usr/src/app/{APP_CONFIG}'
 installer.run_docker_container(APP_API_CONTAINER_NAME, p=block_p, v=block_v, img_name=APP_API_IMAGE_NAME)
 
 # === find out IP docker app_bot-container
