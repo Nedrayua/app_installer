@@ -4,7 +4,6 @@ import json
 from io import UnsupportedOperation
 import time
 import functools
-from turtle import shearfactor
 
 
 # === docker ommands
