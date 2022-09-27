@@ -1,5 +1,3 @@
-from gettext import install
-from importlib.resources import path
 import os
 
 from base import installer

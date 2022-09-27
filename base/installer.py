@@ -1,10 +1,10 @@
-
 import subprocess as sub
 import os
 import json
 from io import UnsupportedOperation
 import time
 import functools
+from turtle import shearfactor
 
 
 # === docker ommands
@@ -230,5 +230,9 @@ def check_file_exist(path_to_file:str) -> None:
 @wait_for(2)
 def remove_file(path_to_file):
     if check_file_exist(path_to_file):
-        os.remove(path_to_file)
-        print(f'Remove file {path_to_file.split("/")[-1]}')
+        try:
+            sub.run(f'sudo rm {path_to_file}', shell=True)
+            print(f'{SUCCESS}\nRemove file {path_to_file.split("/")[-1]}')
+        except sub.CalledProcessError as ex:
+            print(f'{ERROR}\nRemove file {path_to_file.split("/")[-1]} not suxessful')
+        
