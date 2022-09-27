@@ -143,7 +143,7 @@ def run_docker_container(con_name:str=None, p:str=None, v:str=None, *, img_name:
     p = p or ''
     v = v or ''
     docker_command = 'sudo docker run -d {con_name} {p} {v} {img_name}'
-    avaliable_containers = [con['NAMES'] for con in parse_docker_check_result(COMM_CHECK_CONTAINERS)]
+    avaliable_containers = [con.get('NAMES') for con in parse_docker_check_result(COMM_CHECK_CONTAINERS)]
     if con_name not in avaliable_containers:
         try:
             sub.run(docker_command.format(con_name=con_name, p=p, v=v, img_name=img_name), shell=True)
