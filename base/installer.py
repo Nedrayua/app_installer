@@ -166,7 +166,7 @@ def check_docker_container_ip(con_name:str) -> str:
     check_ip_docker_exec = "sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "
     total_exec = check_ip_docker_exec + con_name
     avaliable_containers = [con.get('NAMES') for con in parse_docker_check_result(COMM_CHECK_CONTAINERS)]
-    if con_name not in avaliable_containers:
+    if con_name in avaliable_containers:
         try:
             container_ip = sub.check_output(total_exec, shell=True).decode().strip()
             print(f'{SUCCESS}\nSuccesful find out IP {container_ip} of docker-container: {con_name}')
@@ -239,4 +239,17 @@ def remove_file(path_to_file):
             print(f'{SUCCESS}\nRemove file {path_to_file.split("/")[-1]}')
         except sub.CalledProcessError as ex:
             print(f'{ERROR}\nRemove file {path_to_file.split("/")[-1]} not suxessful')
-        
+
+# ===============================================================================
+import subprocess
+
+containers = ['mongo', 'cool_pike']
+images = []
+volumes = []
+
+rm_container_command = 'sudo docker rm --force {}'
+rm_images_command = 'sudo docker rmi --force {}'
+rm_volumes_commanfd = 'sudo docker volume rm --force {)'
+
+def rm_container(arr):
+    subprocess.run(rm_container_command.format(' '.join(arr)), shell=True)

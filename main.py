@@ -112,7 +112,7 @@ installer.create_file_nginx_config(
 
 # === create docker-image wih nginx
 path_to_dockerfile_nginx = os.path.join(PATH_TO_BASE_DIR, NGNIX_IMAGE_NAME)
-installer.create_docker_image(APP_API_IMAGE_NAME, path_to_dockerfile_app_api)
+installer.create_docker_image(NGNIX_IMAGE_NAME, path_to_dockerfile_app_api)
 
 # === run docker container with nginx
 con_name = f'--name {NGNIX_CONTAINER_NAME}'
