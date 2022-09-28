@@ -4,7 +4,7 @@ from bot import config as conf
 from bot.utils import return_content_args as rca
 
 
-connect(conf.DB_NAME, conf.HOST_MONGO, conf.DB_PORT)
+connect(db=conf.DB_NAME, host=conf.HOST_MONGO, port=conf.DB_PORT)
 
 
 class User(Document):
