@@ -57,7 +57,7 @@ if av_images:
 if av_containers:
     print(co.MESSAGES[co.VOL].format(', '.join(av_volumes)))    
 
-answer = input('For clean-up docker repository input one, two or all choices of "containers", "images" or volumes')
+answer = input('For clean-up docker repository input one, two or all choices of "containers", "images" or volumes\n')
 
 if 'containers' in answer:
     av_containers = [con.get(co.IDENT[co.CON]) for con in ins.parse_docker_check_result(co.COM_CHECK[co.CON])]
@@ -137,7 +137,7 @@ ins.create_file_nginx_config(
     APP_BOT_IP, APP_API_IP)
 
 # === create docker-image wih nginx
-path_to_dockerfile_nginx = os.path.join(PATH_TO_BASE_DIR, NGNIX_IMAGE_NAME)
+path_to_dockerfile_nginx = os.path.join(DIR_PATH, NGNIX_IMAGE_NAME)
 ins.create_docker_image(NGNIX_IMAGE_NAME, path_to_dockerfile_nginx)
 
 # === run docker container with nginx

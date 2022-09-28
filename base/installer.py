@@ -15,6 +15,7 @@ def wait_for(seconds):
     def decorator(func):
         @functools.wraps(func)
         def inner(*args, **kwargs):
+            print(f'Executed function: {func.__name__} with using arguments: {args, kwargs}\n' )
             result = func(*args, **kwargs)
             time.sleep(seconds)
             return result
@@ -95,8 +96,6 @@ def parse_docker_check_result(command:str) -> list:
     return dict_data
 
 
-
-
 @wait_for(2)
 def create_docker_volume(path_to_resource:str, mongo_db_folder:str, docker_volume_name:str)-> None:
     """
@@ -148,7 +147,7 @@ def run_docker_container(con_name:str=None, p:str=None, v:str=None, *, img_name:
         except sub.CalledProcessError as ex:
             print(f'{co.ERROR}\nSomething do wrong:', ex)
     else:
-        print(f'Docker-container with name {con_name} already exist')
+        print(f'Docker-container with name {con_name.split(" ")[-1]} already exist')
 
 
 @wait_for(2)

@@ -30,9 +30,9 @@ IDENT = {
 }
 
 MESSAGES = {
-    'container': 'Docker have containers in repository: {}',
-    'image': 'Docker have images in repository: {}',
-    'volume': 'Docker have volumes in repository: {}'
+    'container': 'Docker have containers in repository: {}\n',
+    'image': 'Docker have images in repository: {}\n',
+    'volume': 'Docker have volumes in repository: {}\n'
 }
 
 COM_CERT_CREATE = 'openssl req -newkey rsa:2048 -sha256 -nodes -keyout {0}/keys/cert_pkey.key \

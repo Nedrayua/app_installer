@@ -22,4 +22,4 @@ WEBHOOK_URL = f"https://{WEBHOOK_HOST}{WEBHOOK_PATH}"
 
 # webserver settings
 WEBAPP_HOST = '0.0.0.0'
-WEBAPP_PORT = data['APP_BOT_PORT']
+WEBAPP_PORT = int(data['APP_BOT_PORT'])
