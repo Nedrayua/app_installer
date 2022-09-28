@@ -49,6 +49,7 @@ av_containers = [con.get(co.NAMES[co.CON]) for con in ins.parse_docker_check_res
 av_images = [img.get(co.NAMES[co.IMG]) for img in ins.parse_docker_check_result(co.COM_CHECK[co.IMG])]
 av_volumes = [vol.get(co.NAMES[co.VOL]) for vol in ins.parse_docker_check_result(co.COM_CHECK[co.VOL])]
 
+
 if av_containers:
     print(co.MESSAGES[co.CON].format(', '.join(av_containers)))
 if av_images:
