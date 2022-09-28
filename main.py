@@ -70,11 +70,12 @@ if 'volumes' in answer:
     ins.rm_from_docker(co.COM_RM[co.VOL], av_volume)
 
 # === create certificate and key
-ins.create_ssl_cert(DOMAIN_NAME_OR_IP, PATH_TO_BASE_DIR)
+path_to_nginx_dir = os.path.join(DIR_PATH, 'nginx')
+ins.create_ssl_cert(DOMAIN_NAME_OR_IP, path_to_nginx_dir)
+
 # === copy cert to bot-app key-directory
 copy_path_from = os.path.join(PATH_TO_BASE_DIR,'keys/bot_cert.pem')
 copy_path_to = os.path.join(DIR_PATH, 'app_bot/key/')
-
 ins.copy_file(copy_path_from, copy_path_to)
 
 # === created docker-volume for mongo

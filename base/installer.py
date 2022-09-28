@@ -71,10 +71,13 @@ def create_ssl_cert(domain_name, path_to_resource:str=None) -> None:
     :path_to_resoure: path to foldere were executer file stored
     Creating certificate with key with put them in keys directory
     """
-    if not os.path.exists(os.path.join(path_to_resource, 'keys')):
+    path_to_keys = os.path.join(path_to_resource, 'keys')
+    if not os.path.exists(path_to_keys):
         os.mkdir(os.path.join(path_to_resource, 'keys'))
     cert_command = sub.run(co.COM_CERT_CREATE.format(path_to_resource, domain_name), shell=True)
-    if cert_command.returncode == 0:
+    path_to_cert = os.path.join(path_to_keys, 'bot_cert.pem')
+    path_to_key = os.path.join(path_to_keys, 'bot_pkey.pem')
+    if cert_command.returncode == 0 and os.path.exists(path_to_cert) and os.path.exists(path_to_key):
         print(f'{co.SUCCESS}\nSuccessful create certificate with key for domainname: ', domain_name)
     else:
         print(f'{co.ERROR}\n, {cert_command}')
