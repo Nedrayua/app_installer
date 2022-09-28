@@ -57,7 +57,7 @@ if av_images:
 if av_containers:
     print(co.MESSAGES[co.VOL].format(', '.join(av_volumes)))    
 
-answer = input('For clean-up docker repository input one, two or all choices of "containers", "images" or volumes\n')
+answer = input('For clean-up docker repository input one, two or all choices of "containers", "images" or "volumes"\n')
 
 if 'containers' in answer:
     av_containers = [con.get(co.IDENT[co.CON]) for con in ins.parse_docker_check_result(co.COM_CHECK[co.CON])]

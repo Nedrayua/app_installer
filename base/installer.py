@@ -142,7 +142,7 @@ def run_docker_container(con_name:str=None, p:str=None, v:str=None, *, img_name:
     if con_name not in avaliable_containers:
         try:
             sub.run(co.COM_DOK_RUN_CON.format(con_name=con_name, p=p, v=v, img_name=img_name), shell=True)
-            print(f'{co.SUCCESS}\nSuccesful run docker container: {con_name} from image: {img_name}')
+            print(f'{co.SUCCESS}\nSuccesful run docker container: {con_name.split()[-1]} from image: {img_name}')
         except sub.CalledProcessError as ex:
             print(f'{co.ERROR}\nSomething do wrong:', ex)
     else:
