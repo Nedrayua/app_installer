@@ -16,9 +16,9 @@ class Configuration:
 # mongo settings
 DB_NAME = data['DB_NAME']
 HOST_MONGO = data['MONGO_CONTAINER_IP']
-DB_PORT = data['DB_PORT']
+DB_PORT = int(data['DB_PORT'])
 
 
 # webserver settings
 WEBAPP_HOST = '0.0.0.0'
-WEBAPP_PORT = data['APP_API_PORT']
+WEBAPP_PORT = int(data['APP_API_PORT'])

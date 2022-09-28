@@ -12,7 +12,7 @@ BOT_TOKEN = data['BOT_TOKEN']
 # mongo settings
 DB_NAME = data['DB_NAME']
 HOST_MONGO = data['MONGO_CONTAINER_IP']
-DB_PORT = data['DB_PORT']
+DB_PORT = int(data['DB_PORT'])
 
 
 # webhook settings

@@ -40,6 +40,8 @@ COM_CERT_CREATE = 'openssl req -newkey rsa:2048 -sha256 -nodes -keyout {0}/keys/
 
 COM_DOK_VOLUME_CREATE = 'sudo docker volume create {} -o device={} -o type=none -o o=bind'
 
-COM_DOK_VOLUME_CREATE
+COM_DOK_RUN_CON = 'sudo docker run -d {con_name} {p} {v} {img_name}'
 
 COM_DOK_VOLUME_CREATE
+
+COMM_DOCK_IP = "sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "

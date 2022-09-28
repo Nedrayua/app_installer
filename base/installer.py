@@ -138,16 +138,15 @@ def run_docker_container(con_name:str=None, p:str=None, v:str=None, *, img_name:
     con_name = con_name or ''
     p = p or ''
     v = v or ''
-    docker_command = 'sudo docker run -d {con_name} {p} {v} {img_name}'
     avaliable_containers = [con.get(co.NAMES[co.CON]) for con in parse_docker_check_result(co.COM_CHECK[co.CON])]
     if con_name not in avaliable_containers:
         try:
-            sub.run(docker_command.format(con_name=con_name, p=p, v=v, img_name=img_name), shell=True)
+            sub.run(co.COM_DOK_RUN_CON.format(con_name=con_name, p=p, v=v, img_name=img_name), shell=True)
             print(f'{co.SUCCESS}\nSuccesful run docker container: {con_name} from image: {img_name}')
         except sub.CalledProcessError as ex:
             print(f'{co.ERROR}\nSomething do wrong:', ex)
     else:
-        print(f'Docker-container with name {con_name.split(" ")[-1]} already exist')
+        print(f'Docker-container with name {con_name.split()[-1]} already exist')
 
 
 @wait_for(2)
@@ -156,8 +155,7 @@ def check_docker_container_ip(con_name:str) -> str:
     :con_name: - name of docker-container
     Getting IP address of docker-containers
     """
-    check_ip_docker_exec = "sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "
-    total_exec = check_ip_docker_exec + con_name
+    total_exec = co.COMM_DOCK_IP + con_name
     avaliable_containers = [con.get('NAMES') for con in parse_docker_check_result(co.COM_CHECK[co.CON])]
     if con_name in avaliable_containers:
         try:
