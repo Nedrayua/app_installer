@@ -38,14 +38,14 @@ def users_view():
     users_objects = PaginateQuerySet(queryset=users_objects, per_page=per_page, num_page=num_page)
 
     print(users_objects.total_pages)
-    return render_template('users.html', users=users_objects)
+    return render_template('api/users.html', users=users_objects)
 
 
 @api.route('/user/<id>', methods=['POST', 'GET'])
 def user_detail(id):
     user_object = User.objects.get(telegram_id=id)
 
-    return render_template('user_detail.html', user=user_object)
+    return render_template('api/user_detail.html', user=user_object)
 
 
 @api.route('/create_user', methods=['POST', 'GET'])
@@ -79,7 +79,7 @@ def create_user():
 
         return redirect(url_for('user_detail', id=user.telegram_id))
     
-    return render_template('create_user.html', form=form_object)
+    return render_template('api/create_user.html', form=form_object)
 
 
 @api.route('/edit_user/<id>', methods=['POST', 'GET'])
@@ -101,7 +101,7 @@ def edit_user(id):
             return redirect(url_for('user_detail', id=user_object.telegram_id))
 
     form_object = UserForm(obj=user_object)
-    return render_template('edit_user.html', user=user_object, form=form_object)
+    return render_template('api/edit_user.html', user=user_object, form=form_object)
 
 
 @api.route('/delete_user/<id>', methods=['GET', 'POST'])
@@ -117,4 +117,4 @@ def delete_user(id):
             print('Error here', ex)
 
         return redirect(url_for('users_view'))
-    return render_template('user_delete.html', user=user_object)
+    return render_template('api/user_delete.html', user=user_object)
