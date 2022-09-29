@@ -20,12 +20,12 @@ DB_NAME = 'CURRENCY_BOT'
 DB_PORT = '27017'
 APP_BOT_PORT = 5000
 
+# === api configs
+APP_API_PORT = 8080
+
 # === docker-volume names
 MONGO_DB_VOLUME_NAME = 'mongo_db'
 MONGO_VOLUME_DIRECTORY_NAME = 'mongo_db'
-
-# === api configs
-APP_API_PORT = 8080
 
 # === docker image names
 APP_BOT_IMAGE_NAME = 'app_bot'

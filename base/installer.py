@@ -15,9 +15,9 @@ def wait_for(seconds):
     def decorator(func):
         @functools.wraps(func)
         def inner(*args, **kwargs):
-            print(f'Executed function: {func.__name__} with using arguments: {args, kwargs}\n' )
-            result = func(*args, **kwargs)
+            print(f'Executed function: {func.__name__}\nUsing arguments: {args, kwargs}\n' )
             time.sleep(seconds)
+            result = func(*args, **kwargs)
             return result
         return inner
     return decorator
@@ -76,7 +76,7 @@ def create_ssl_cert(domain_name, path_to_resource:str=None) -> None:
         os.mkdir(os.path.join(path_to_resource, 'keys'))
     cert_command = sub.run(co.COM_CERT_CREATE.format(path_to_resource, domain_name), shell=True)
     path_to_cert = os.path.join(path_to_keys, 'bot_cert.pem')
-    path_to_key = os.path.join(path_to_keys, 'bot_pkey.pem')
+    path_to_key = os.path.join(path_to_keys, 'cert_pkey.key')
     if cert_command.returncode == 0 and os.path.exists(path_to_cert) and os.path.exists(path_to_key):
         print(f'{co.SUCCESS}\nSuccessful create certificate with key for domainname: ', domain_name)
     else:
