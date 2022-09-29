@@ -2,21 +2,21 @@
 
 {% block title %}
 
-    Create user
+    Edit user
 
 {% endblock %}
 
 
 {% block content_title %}
 
-    Create user:
+    Edit user:
 
 {% endblock %}
 
 {% block content %}
 
 <div class="col-md-5">
-    <form action="{{ url_for('create_user') }}" method="POST">
+    <form action="{{ url_for('api.edit_user', id=user.telegram_id) }}" method="POST">
         
         {% for field in form %}
             {% if field.id != 'csrf_token' %}
@@ -34,12 +34,13 @@
         {% if form.errors %}
             {% for error in form.errors.values() %}
                 {% for err in error %}
-                    {{ err }}
+                <font size="2">{{ err }}</font>
                 {% endfor %}    
             {% endfor%}
         {% endif %}
             <br>
-            <button position="absolute" type="submit" class="btn btn-outline-success">Create user</button>
+            <button position="absolute" type="submit" class="btn btn-outline-success">Edit user</button>
+            <a class="btn btn-outline-danger" aria-current="page" href="{{ url_for('api.user_detail', id=user.telegram_id) }}">Cancel</a>
     </form>
 </div>
 
