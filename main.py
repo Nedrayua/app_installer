@@ -144,5 +144,5 @@ ins.create_docker_image(NGNIX_IMAGE_NAME, path_to_dockerfile_nginx)
 # === run docker container with nginx
 con_name = f'--name {NGNIX_CONTAINER_NAME}'
 block_p = '-p 80:80 -p 443:443'
-block_v = f'{os.path.join(PATH_TO_BASE_DIR, NGINX_CONFIG_FILENAME)}:/etc/nginx/conf.d/default.conf'
+block_v = f'-v {os.path.join(PATH_TO_BASE_DIR, NGINX_CONFIG_FILENAME)}:/etc/nginx/conf.d/default.conf'
 ins.run_docker_container(con_name=con_name, p=block_p, v=block_v, img_name=NGNIX_IMAGE_NAME)
