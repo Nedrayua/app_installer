@@ -200,12 +200,12 @@ async def val_tracking(call: types.CallbackQuery):
     button_text_list = [co.STOP_TRACKING_BUTTON, co.BASE_CURRENCY_LIST_BUTTON]
     
     kb = inline_kb(button_data_list, button_text_list)
-    num = 60
+    num = 20
     for n in range(num):
 
             if CHECK_TRACKING[call.from_user.id] == co.stop_tracking_tag:
                 break
-            await asyncio.sleep(1)
+            await asyncio.sleep(1.5)
             
             message_text = await take_message(val=pair, oto=True) + f'\nNumber of check {(num - 1) - n}\n'
             
@@ -307,12 +307,12 @@ async def val_tracking(call: types.CallbackQuery):
     button_text_list = [co.STOP_TRACKING_BUTTON, co.CURRENCY_LIST_BUTTON]
     
     kb = inline_kb(button_data_list, button_text_list)
-    num = 60
+    num = 20
     for n in range(num):
 
             if CHECK_TRACKING[call.from_user.id] == co.stop_tracking_tag:
                 break
-            await asyncio.sleep(1)
+            await asyncio.sleep(2)
             
             message_text = await take_message(val=val) + f'\nNumber of check {(num - 1) - n}\n'
             
@@ -326,7 +326,7 @@ async def val_tracking(call: types.CallbackQuery):
     CHECK_TRACKING.update({call.from_user.id: co.stop_tracking_tag})
 
 #==========================================================================================
-# Persnal data sector
+# Personal data sector
 
 
 @dp.message_handler(lambda m: co.MAIN_MENU[co.settings_tag] == m.text)

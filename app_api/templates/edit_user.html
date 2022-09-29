@@ -16,7 +16,7 @@
 {% block content %}
 
 <div class="col-md-5">
-    <form action="{{ url_for('edit_user', id=user.telegram_id) }}" method="POST">
+    <form action="/api/{{ url_for('edit_user', id=user.telegram_id) }}" method="POST">
         
         {% for field in form %}
             {% if field.id != 'csrf_token' %}
@@ -40,7 +40,7 @@
         {% endif %}
             <br>
             <button position="absolute" type="submit" class="btn btn-outline-success">Edit user</button>
-            <a class="btn btn-outline-danger" aria-current="page" href="{{ url_for('user_detail', id=user.telegram_id) }}">Cancel</a>
+            <a class="btn btn-outline-danger" aria-current="page" href="/api/{{ url_for('user_detail', id=user.telegram_id) }}">Cancel</a>
     </form>
 </div>
 
