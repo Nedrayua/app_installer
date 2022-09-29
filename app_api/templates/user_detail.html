@@ -46,7 +46,7 @@
       </tr>
   </table>
     
-        <a class="btn btn-outline-success" aria-current="page" href="{{ url_for('api.edit_user', id=user.telegram_id) }}">Edit user</a>
-        <a class="btn btn-outline-danger" aria-current="page" href="{{ url_for('api.delete_user', id=user.telegram_id) }}">Delete user</a>
+        <a class="btn btn-outline-success" aria-current="page" href="{{ url_for('edit_user', id=user.telegram_id) }}">Edit user</a>
+        <a class="btn btn-outline-danger" aria-current="page" href="{{ url_for('delete_user', id=user.telegram_id) }}">Delete user</a>
 
 {% endblock %}
