@@ -3,6 +3,7 @@ import os
 from base import installer as ins
 from base import constance as co
 
+DEBUG_CONTROL = False
 
 DIR_PATH = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = 'base'

@@ -7,15 +7,18 @@ import functools
 import re
 
 from . import constance as co
+from docker_installer.main import DEBUG_CONTROL
 
 def wait_for(seconds):
     """
-    func decorator for use time.slip() on used functon
+    func decorator for use time.slip() on used functon end control
+    for execute decorated functions if DEBUG_CONTROL == True
     """
     def decorator(func):
         @functools.wraps(func)
         def inner(*args, **kwargs):
-            print(f'Executed function: {func.__name__}\nUsing arguments: {args, kwargs}\n' )
+            if DEBUG_CONTROL:
+                print(f'Executed function: {func.__name__}\nUsing arguments: {args, kwargs}\n' )
             time.sleep(seconds)
             result = func(*args, **kwargs)
             return result
@@ -28,6 +31,7 @@ def check_host_ip():
     """
     Check IP of host
     """
+    print('Start function for checking IP of host')
     ip = sub.check_output('curl ifconfig.me', shell=True).decode()
     print(f'Host ip: {ip}')
     time.sleep(1)
@@ -42,6 +46,7 @@ def install_from_execute_file(path_to_resource:str=None) -> None:
     host machine. Executes a list of instructions from .txt files located 
     in the directory specified in the argument
     """
+    print('Start function for install dependencies for applications')
     path_to_resource = path_to_resource or ''
     files = os.listdir(path_to_resource)
     executer_files = [f for f in files if f.startswith('execute_')]
@@ -71,6 +76,7 @@ def create_ssl_cert(domain_name, path_to_resource:str=None) -> None:
     :path_to_resoure: path to foldere were executer file stored
     Creating certificate with key with put them in keys directory
     """
+    print('Start function for create certificates')
     path_to_keys = os.path.join(path_to_resource, 'keys')
     if not os.path.exists(path_to_keys):
         os.mkdir(os.path.join(path_to_resource, 'keys'))
@@ -89,6 +95,7 @@ def parse_docker_check_result(command:str) -> list:
     :command: - docker command for take a list of items
     for example: 'sudo docker ps'
     """
+    print(f'Start function for parse docker contains information for {command}')
     data_str = sub.check_output(command, shell=True).decode()
     list_data_split = [value for value in data_str.split('\n') if value]
     list_data = [re.split(r'\s{2,}', row) for row in list_data_split]
@@ -104,7 +111,7 @@ def create_docker_volume(path_to_resource:str, mongo_db_folder:str, docker_volum
     """
     Create docker-volume with binding to folder
     """
-    
+    print(f'Start function for docker volume created vith name {docker_volume_name}')
     mongo_db_folder_path = os.path.join(path_to_resource, mongo_db_folder)
     if not os.path.exists(os.path.join(path_to_resource, mongo_db_folder)):
         os.mkdir(mongo_db_folder_path)
@@ -124,6 +131,7 @@ def create_docker_image( image_name:str, path_to_dokerfile:str):
     """
     Created docker image
     """
+    print(f'Start function for create docker image {image_name}')
     create_image_command = f'sudo docker build -t {image_name} {path_to_dokerfile}'
     aval_images = [image.get(co.NAMES[co.IMG]) for image in parse_docker_check_result(co.COM_CHECK[co.IMG])]
     if image_name not in aval_images:
@@ -138,6 +146,7 @@ def create_docker_image( image_name:str, path_to_dokerfile:str):
 
 @wait_for(2)
 def run_docker_container(con_name:str=None, p:str=None, v:str=None, *, img_name:str) -> None:
+    print(f'Start function for run docker-container vith name: {con_name} from image {img_name}')
     con_name = con_name or ''
     p = p or ''
     v = v or ''
@@ -158,6 +167,7 @@ def check_docker_container_ip(con_name:str) -> str:
     :con_name: - name of docker-container
     Getting IP address of docker-containers
     """
+    print(f'Start function checking IP of docker-container vith name: {con_name}')
     total_exec = co.COMM_DOCK_IP + con_name
     avaliable_containers = [con.get('NAMES') for con in parse_docker_check_result(co.COM_CHECK[co.CON])]
     if con_name in avaliable_containers:
@@ -173,6 +183,7 @@ def check_docker_container_ip(con_name:str) -> str:
 
 @wait_for(2)
 def sind_data_to_config_json(data:dict, config_file:str, path_to_resource:str=None) -> None:
+    print(f'Sind configuration data on config file: {config_file}')
     path_to_resource = path_to_resource or ''
     path_to_config_file = os.path.join(path_to_resource, config_file)
     with open(path_to_config_file, 'w') as file:
@@ -192,6 +203,7 @@ def sind_data_to_config_json(data:dict, config_file:str, path_to_resource:str=No
 
 @wait_for(2)
 def copy_file(path_file_from:str, path_file_to:str) -> None:
+    print(f'Start copy file:\nFROM: {path_file_from}\n{path_file_to}')
     copy = sub.run(f'cp {path_file_from} {path_file_to}', shell=True)
     if copy.returncode == 0:
         print(f'{co.SUCCESS}\nFile {path_file_from.split("/")[-1]} saccessfull copied')
@@ -210,13 +222,14 @@ def create_file_nginx_config(
     """
     take ip docker-containers and fill-ins him to the nginx configuration files
     """
+    print(f'Start to create file nginx.config')
     path_to_template_file = os.path.join(path_to_base_folder, template_file_name)
     with open(path_to_template_file, 'r') as file:
         template_form = file.read()
 
     nginx_conf = template_form.format(ip_1, ip_2)
-
     path_to_nginx_conf = os.path.join(path_to_base_folder, nginx_conf_file_name)
+
     with open(path_to_nginx_conf, 'w') as file:
         file.write(nginx_conf)
 
@@ -226,7 +239,8 @@ def check_file_exist(path_to_file:str) -> None:
 
 
 @wait_for(2)
-def remove_file(path_to_file):
+def remove_file(path_to_file)-> None:
+    print(f'Start to file remove {path_to_file}')
     if check_file_exist(path_to_file):
         try:
             sub.run(f'sudo rm {path_to_file}', shell=True)
@@ -237,7 +251,7 @@ def remove_file(path_to_file):
 
 @wait_for(2)
 def rm_from_docker(command:str, arr):
-    
+    print('Start removing objects from Docker-repository')    
     victims_of_deletion = ' '.join(arr)
     if victims_of_deletion:
         try:
