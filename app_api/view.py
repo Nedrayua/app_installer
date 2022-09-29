@@ -1,6 +1,7 @@
 
 from flask import render_template, request, flash, redirect, url_for
 from mongoengine.queryset.visitor import Q
+from mongoengine.errors import ValidationError
 
 from app import app
 from models import User
@@ -13,7 +14,7 @@ def index():
 
     return render_template('index.html')
 
-@app.route('/users')
+@app.route('/api/users')
 def users_view():
 
     num_page = request.args.get('page')
@@ -42,14 +43,14 @@ def users_view():
     return render_template('users.html', users=users_objects)
 
 
-@app.route('/user/<id>', methods=['POST', 'GET'])
+@app.route('/api/user/<id>', methods=['POST', 'GET'])
 def user_detail(id):
     user_object = User.objects.get(telegram_id=id)
 
     return render_template('user_detail.html', user=user_object)
 
 
-@app.route('/create_user', methods=['POST', 'GET'])
+@app.route('/api/create_user', methods=['POST', 'GET'])
 def create_user():
     form_object = UserForm()
     
@@ -83,25 +84,29 @@ def create_user():
     return render_template('create_user.html', form=form_object)
 
 
-@app.route('/edit_user/<id>', methods=['POST', 'GET'])
+@app.route('/api/edit_user/<id>', methods=['POST', 'GET'])
 def edit_user(id):
     user_object = User.objects.get(telegram_id=id)
 
     if request.method == 'POST':
-        user_form = UserForm(formdata=request.form, obj=user_object)
+        try:
+            user_form = UserForm(formdata=request.form, obj=user_object)
 
-        user_form.is_blocked.data = True if user_form.is_blocked.data == 'True' else False
+            user_form.is_blocked.data = True if user_form.is_blocked.data == 'True' else False
 
-        user_form.populate_obj(user_object)
-        user_object.save()        
-        flash('User successful edit', 'confirm')
-        return redirect(url_for('user_detail', id=user_object.telegram_id))
+            user_form.populate_obj(user_object)
+            user_object.save()        
+            flash('User successful edit', 'confirm')
+            return redirect(url_for('user_detail', id=user_object.telegram_id))
+        except ValidationError:
+            flash('User not edited: fillin useremail', 'error')
+            return redirect(url_for('user_detail', id=user_object.telegram_id))
 
     form_object = UserForm(obj=user_object)
     return render_template('edit_user.html', user=user_object, form=form_object)
 
 
-@app.route('/delete_user/<id>', methods=['GET', 'POST'])
+@app.route('/api/delete_user/<id>', methods=['GET', 'POST'])
 def delete_user(id):
     user_object = User.objects.get(telegram_id=id)
     if request.method == 'POST':
