@@ -7,7 +7,6 @@ from models import User
 from forms import UserForm
 from utils import PaginateQuerySet
 
-from app import app
 
 @app.route('/')
 def index():
@@ -120,4 +119,4 @@ def delete_user(id):
             print('Error here', ex)
 
         return redirect(url_for('users_view'))
-    return render_template('app/user_delete.html', user=user_object)
+    return render_template('user_delete.html', user=user_object)
